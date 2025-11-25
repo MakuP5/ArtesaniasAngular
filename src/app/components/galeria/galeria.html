@@ -1,0 +1,53 @@
+<div class="galeria-container">
+
+  <h2 class="galeria-titulo">Galería de productos</h2>
+
+  <!-- Estado de cargando -->
+  <div *ngIf="cargando" class="estado estado-cargando">
+    Cargando productos...
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="!cargando && error" class="estado estado-error">
+    {{ error }}
+  </div>
+
+  <!-- Lista de productos -->
+  <div *ngIf="!cargando && !error" class="grid-productos">
+    <div
+      class="card-producto"
+      *ngFor="let producto of productos">
+
+      <div class="card-img-wrapper">
+        <img
+          *ngIf="producto.imagen_url"
+          [src]="'' + producto.imagen_url"
+          [alt]="producto.titulo">
+        <div *ngIf="!producto.imagen_url" class="placeholder-imagen">
+          Sin imagen
+        </div>
+      </div>
+
+      <div class="card-body">
+        <h3 class="card-titulo">{{ producto.titulo }}</h3>
+
+        <p class="card-descripcion">
+          Stock disponible: {{ producto.stock }}
+        </p>
+
+        <p class="card-precio">
+          $ {{ producto.precio | number:'1.2-2' }}
+        </p>
+
+
+        <button
+          type="button"
+          class="btn-agregar"
+          (click)="agregarAlCarrito(producto)">
+          Agregar al carrito
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
