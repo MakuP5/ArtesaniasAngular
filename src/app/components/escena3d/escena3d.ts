@@ -9,7 +9,7 @@ import {
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 @Component({
   selector: 'app-escena3d',
   imports: [],
@@ -25,8 +25,9 @@ export class Escena3d implements AfterViewInit, OnDestroy {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private renderer!: THREE.WebGLRenderer;
-  private cube!: THREE.Mesh;
+  private model: THREE.Group | null = null;
   private controls!: OrbitControls;
+  
 
   // Animación
   private animationId: number | null = null;
@@ -92,7 +93,7 @@ export class Escena3d implements AfterViewInit, OnDestroy {
     directional.position.set(5, 5, 5);
     directional.castShadow = true;
     this.scene.add(directional);
-
+/*
     // 6. Cubo
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshStandardMaterial({
@@ -104,8 +105,29 @@ export class Escena3d implements AfterViewInit, OnDestroy {
     this.cube.castShadow = true;
     this.cube.receiveShadow = true;
     this.scene.add(this.cube);
+*/
+
+//6. Enfoque para cargar modelos
+
+
+    const loader = new GLTFLoader();
+ 
+    loader.load('assets/models/cuy.glb', (gltf) => {
+      this.model = gltf.scene; // Guarda el modelo en una propiedad
+      this.model.castShadow = true;
+      this.model.receiveShadow = true;
+      this.scene.add(this.model);
+    },
+      (xhr) => {
+        console.log((xhr.loaded / xhr.total * 100) + '% cargado');
+      },
+      (error) => {
+        console.error('Error al cargar el modelo:', error);
+      }
+    );
 
     // 7. Piso opcional
+
     const planeGeometry = new THREE.PlaneGeometry(6, 6);
     const planeMaterial = new THREE.MeshStandardMaterial({
       color: 0x111827,
@@ -116,7 +138,7 @@ export class Escena3d implements AfterViewInit, OnDestroy {
     plane.rotation.x = -Math.PI / 2;
     plane.position.y = -0.6;
     plane.receiveShadow = true;
-    this.scene.add(plane);
+    //this.scene.add(plane);
 
     // 8. OrbitControls para rotar con el mouse
     this.controls = new OrbitControls(
@@ -137,9 +159,10 @@ export class Escena3d implements AfterViewInit, OnDestroy {
       // Guardar id para poder detenerlo
       this.animationId = requestAnimationFrame(animate);
 
-      if (this.rotando && this.cube) {
-        this.cube.rotation.x += 0.01;
-        this.cube.rotation.y += 0.015;
+      if (this.rotando && this.model) {
+        //this.model.rotation.x += 0.01;
+        this.model.rotation.y += 0.01;
+        //this.model.rotation.y += 0.015;
       }
 
       this.controls.update();
@@ -162,11 +185,11 @@ export class Escena3d implements AfterViewInit, OnDestroy {
   }
 
   cambiarColor(): void {
-    if (!this.cube) return;
+/*    if (!this.model) return;
 
-    const material = this.cube.material as THREE.MeshStandardMaterial;
+    const material = this.model.material as THREE.MeshStandardMaterial;
     // Color aleatorio
     const randomColor = new THREE.Color(Math.random(), Math.random(), Math.random());
-    material.color = randomColor;
+    material.color = randomColor;*/
   }
 }

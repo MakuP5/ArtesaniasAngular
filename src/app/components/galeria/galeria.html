@@ -21,7 +21,7 @@
       <div class="card-img-wrapper">
         <img
           *ngIf="producto.imagen_url"
-          [src]="'' + producto.imagen_url"
+          [src]="'assets/images/'+ producto.imagen_url"
           [alt]="producto.titulo">
         <div *ngIf="!producto.imagen_url" class="placeholder-imagen">
           Sin imagen
